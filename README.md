@@ -1,6 +1,6 @@
 # simpanuang
 
-A new Flutter project.
+A Flutter Project for Final Task on IuM - 5th Semester.
 
 ## Getting Started
 
