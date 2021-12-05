@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simpanuang/pages/add_transaction_page.dart';
+import 'package:simpanuang/pages/choose_category_page.dart';
 import 'package:simpanuang/pages/main_page.dart';
+import 'package:simpanuang/pages/transactions/add_transaction_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MainPage(),
         '/add-transaction': (context) => AddTransactionPage(),
+        '/choose-category': (context) => ChooseCategoryPage(),
       },
       builder: (BuildContext context, Widget child) {
         return MediaQuery(

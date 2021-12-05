@@ -73,19 +73,24 @@ class AddTransactionPage extends StatelessWidget {
                     ),
                     SizedBox(width: 14),
                     Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: whiteColor,
-                          boxShadow: [defaultBoxShadow],
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Text(
-                          'Pilih Kategori',
-                          style: greenTextStyle.copyWith(
-                            fontSize: 19,
-                            color: Color(0x9957C478),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/choose-category');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: whiteColor,
+                            boxShadow: [defaultBoxShadow],
+                          ),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text(
+                            'Pilih Kategori',
+                            style: greenTextStyle.copyWith(
+                              fontSize: 19,
+                              color: Color(0x9957C478),
+                            ),
                           ),
                         ),
                       ),

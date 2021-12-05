@@ -88,6 +88,7 @@ class TransactionPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(width: 41),
             ],
           ),
         ),
