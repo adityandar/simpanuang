@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:simpanuang/pages/choose_category_page.dart';
 import 'package:simpanuang/theme.dart';
 import 'package:simpanuang/widgets/custom_back_button.dart';
 
-class AddTransactionPage extends StatelessWidget {
+class AddTransactionPage extends StatefulWidget {
+  @override
+  _AddTransactionPageState createState() => _AddTransactionPageState();
+}
+
+class _AddTransactionPageState extends State<AddTransactionPage> {
+  int currCategoryId = -1;
+  String currCategoryTitle = "";
+  int currCategoryType = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,8 +83,17 @@ class AddTransactionPage extends StatelessWidget {
                     SizedBox(width: 14),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/choose-category');
+                        onTap: () async {
+                          List result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChooseCategoryPage()));
+                          print(result);
+                          setState(() {
+                            currCategoryId = result[0]['id'];
+                            currCategoryTitle = result[0]['title'];
+                            currCategoryType = result[1];
+                          });
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -86,10 +104,14 @@ class AddTransactionPage extends StatelessWidget {
                           padding:
                               EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: Text(
-                            'Pilih Kategori',
+                            (currCategoryId == -1)
+                                ? 'Pilih Kategori'
+                                : currCategoryTitle,
                             style: greenTextStyle.copyWith(
                               fontSize: 19,
-                              color: Color(0x9957C478),
+                              color: (currCategoryId != -1)
+                                  ? primaryColor
+                                  : Color(0x9957C478),
                             ),
                           ),
                         ),

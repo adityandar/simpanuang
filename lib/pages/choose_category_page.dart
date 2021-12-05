@@ -10,12 +10,12 @@ class ChooseCategoryPage extends StatefulWidget {
 
 class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
   final List kategoriMasuk = [
-    'Gaji',
-    'Hadiah',
-    'Bonus',
-    'Award',
-    'penjualan',
-    'Lainnya',
+    {'id': 0, 'title': 'Gaji'},
+    {'id': 1, 'title': 'Hadiah'},
+    {'id': 2, 'title': 'Bonus'},
+    {'id': 3, 'title': 'Award'},
+    {'id': 4, 'title': 'Penjualan'},
+    {'id': 5, 'title': 'Lainnya'}
   ];
 
   final List kategoriKeluar = [
@@ -34,7 +34,7 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
     {'id': 12, 'title': 'Keluarga'},
     {'id': 13, 'title': 'Investasi'},
     {'id': 14, 'title': 'Asuransi'},
-    {'id': 16, 'title': 'Lainnya'},
+    {'id': 15, 'title': 'Lainnya'},
   ];
 
   int _currIdx = 0;
@@ -111,14 +111,22 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
               ? Column(
                   children: kategoriMasuk
                       .map(
-                        (item) => CategoryTile(item),
+                        (item) => GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context, [item, 0]);
+                            },
+                            child: CategoryTile(item['title'])),
                       )
                       .toList(),
                 )
               : Column(
                   children: kategoriKeluar
                       .map(
-                        (item) => CategoryTile(item['title']),
+                        (item) => GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context, [item, 1]);
+                            },
+                            child: CategoryTile(item['title'])),
                       )
                       .toList(),
                 ),
