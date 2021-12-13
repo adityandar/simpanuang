@@ -1,11 +1,15 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:simpanuang/models/transaction_model.dart';
 import 'package:simpanuang/pages/choose_category_page.dart';
+import 'package:simpanuang/services/service.dart';
 import 'package:simpanuang/theme.dart';
 import 'package:simpanuang/widgets/custom_back_button.dart';
 
 class AddTransactionPage extends StatefulWidget {
+  final Service service = Service();
+
   @override
   _AddTransactionPageState createState() => _AddTransactionPageState();
 }
@@ -14,6 +18,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   int currCategoryId = -1;
   String currCategoryTitle = "";
   int currCategoryType = 0;
+  bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _priceController = TextEditingController();
@@ -24,7 +29,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    void handleSimpan() {
+    void handleSimpan() async {
+      setState(() {
+        _isLoading = true;
+      });
       if (_formKey.currentState.validate()) {
         if (currCategoryId == -1) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -36,10 +44,23 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           );
         } else {
           //INI APABILA BERHASIL.
-          print(
-              "${_dateController.text} ${_noteController.text} ${_priceController.text} ${currCategoryTitle}");
+          TransactionModel transaksi = TransactionModel.fromJson({
+            'id': 1,
+            'jenis': currCategoryType,
+            'kategori': currCategoryId,
+            'tanggal': _dateController.text,
+            'catatan': _noteController.text,
+          });
+          await widget.service.addTransaction(transaksi);
+          var transactions = await widget.service.getTransactions();
+          transactions.forEach((element) {
+            print(element.toJson());
+          });
         }
       } else {}
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     return Scaffold(
@@ -199,7 +220,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             ),
                             onChanged: (val) => print(val),
                             validator: (val) {
-                              print(val);
                               return null;
                             },
                             onSaved: (val) => print(val),
@@ -256,10 +276,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               padding: const EdgeInsets.symmetric(horizontal: 120),
               child: ElevatedButton(
                 onPressed: handleSimpan,
-                child: Text(
-                  'Simpan',
-                  style: whiteTextStyle.copyWith(fontSize: 19),
-                ),
+                child: (!_isLoading)
+                    ? Text(
+                        'Simpan',
+                        style: whiteTextStyle.copyWith(fontSize: 19),
+                      )
+                    : CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
