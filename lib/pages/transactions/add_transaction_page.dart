@@ -44,18 +44,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           );
         } else {
           //INI APABILA BERHASIL.
-          TransactionModel transaksi = TransactionModel.fromJson({
-            'id': 1,
-            'jenis': currCategoryType,
-            'kategori': currCategoryId,
-            'tanggal': _dateController.text,
-            'catatan': _noteController.text,
-          });
+          TransactionModel transaksi = TransactionModel(
+            jenis: currCategoryType,
+            kategori: currCategoryId,
+            tanggal: _dateController.text,
+            catatan: _noteController.text,
+            harga: int.tryParse(_priceController.text),
+          );
           await widget.service.addTransaction(transaksi);
-          var transactions = await widget.service.getTransactions();
-          transactions.forEach((element) {
-            print(element.toJson());
-          });
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
         }
       } else {}
       setState(() {

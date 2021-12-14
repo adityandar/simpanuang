@@ -22,7 +22,8 @@ class Service {
           jenis INTEGER,
           kategori INTEGER,
           tanggal TEXT,
-          catatan TEXT
+          catatan TEXT,
+          harga INT
           )""");
     });
   }
@@ -35,12 +36,12 @@ class Service {
     return db.insert("Transactions", transaction.toJson());
   }
 
-  Future<List<TransactionModel>> getTransactions() async {
+  Future<List<TransactionModel>> getTransactions(int bulan) async {
     //returns the transactions as a list (array)
 
     final db = await init();
-    final maps = await db.query(
-        "Transactions"); //query all the rows in a table as an array of maps
+    final maps = await db.query("Transactions",
+        where: "strftime('%m', tanggal) = '?'", whereArgs: [bulan]);
 
     return List.generate(maps.length, (i) {
       //create a list of transactions
@@ -50,8 +51,43 @@ class Service {
         kategori: maps[i]['kategori'],
         tanggal: maps[i]['tanggal'],
         catatan: maps[i]['catatan'],
+        harga: maps[i]['harga'],
       );
     });
+  }
+
+  Future<List<int>> getSummaryHarga(int bulan) async {
+    //returns the transactions as a list (array)
+
+    final db = await init();
+    final resultDapat = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = '?' AND jenis = 0",
+      [
+        bulan,
+      ],
+    );
+
+    final resultKeluar = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = '?' AND jenis = 1",
+      [
+        bulan,
+      ],
+    );
+
+    print(resultDapat);
+    print(resultKeluar);
+    int resultDapatFix = (resultDapat[0]["SUM(harga)"] == null)
+        ? 0
+        : resultDapat[0]["SUM(harga)"];
+    int resultKeluarFix = (resultKeluar[0]["SUM(harga)"] == null)
+        ? 0
+        : resultKeluar[0]["SUM(harga)"];
+    int resultTotal = resultDapatFix - resultKeluarFix;
+    return [
+      resultDapatFix,
+      resultKeluarFix,
+      resultTotal,
+    ];
   }
 
   Future<int> deleteTransaction(int id) async {
