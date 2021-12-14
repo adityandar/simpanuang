@@ -42,12 +42,37 @@ class _TransactionPageState extends State<TransactionPage> {
                   fontSize: 16,
                 ),
               ),
-              Text(
-                currencyFormatter.format(3034500),
-                style: greenTextStyle.copyWith(
-                  fontWeight: semiBold,
-                  fontSize: 34,
-                ),
+              FutureBuilder(
+                future: service.getTotalHargaTransaksi(),
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data.isNegative) {
+                      return Text(
+                        currencyFormatter.format(snapshot.data),
+                        style: redTextStyle.copyWith(
+                          fontWeight: semiBold,
+                          fontSize: 34,
+                        ),
+                      );
+                    } else {
+                      return Text(
+                        currencyFormatter.format(snapshot.data),
+                        style: greenTextStyle.copyWith(
+                          fontWeight: semiBold,
+                          fontSize: 34,
+                        ),
+                      );
+                    }
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -141,6 +166,21 @@ class _TransactionPageState extends State<TransactionPage> {
           builder: (BuildContext context,
               AsyncSnapshot<List<TransactionModel>> snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
+                    child: Text(
+                      "Anda belum melakukan transaksi.",
+                      style: blackTextStyle.copyWith(
+                        fontWeight: medium,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                );
+              }
               return Column(
                 children: [
                   Padding(
@@ -149,80 +189,80 @@ class _TransactionPageState extends State<TransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         FutureBuilder(
-                            future: service.getSummaryHarga(bulan),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<int>> snapshot) {
-                              if (snapshot.hasData) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Pemasukan',
-                                          style: blackTextStyle.copyWith(
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          currencyFormatter
-                                              .format(snapshot.data[0]),
-                                          style: greenTextStyle.copyWith(
-                                              fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Pengeluaran',
-                                          style: blackTextStyle.copyWith(
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          currencyFormatter
-                                              .format(snapshot.data[1]),
-                                          style: redTextStyle.copyWith(
-                                              fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 8),
-                                    Divider(
-                                      color: primaryColor,
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      currencyFormatter
-                                          .format(snapshot.data[2]),
-                                      style: (snapshot.data[2].isNegative)
-                                          ? redTextStyle.copyWith(
-                                              fontWeight: semiBold,
-                                              fontSize: 16,
-                                            )
-                                          : greenTextStyle.copyWith(
-                                              fontWeight: semiBold,
-                                              fontSize: 16,
-                                            ),
-                                      // textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text(snapshot.error.toString());
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        primaryColor),
+                          future: service.getSummaryHarga(bulan),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<int>> snapshot) {
+                            if (snapshot.hasData) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Pemasukan',
+                                        style: blackTextStyle.copyWith(
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        currencyFormatter
+                                            .format(snapshot.data[0]),
+                                        style: greenTextStyle.copyWith(
+                                            fontSize: 16),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              }
-                            }),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Pengeluaran',
+                                        style: blackTextStyle.copyWith(
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        currencyFormatter
+                                            .format(snapshot.data[1]),
+                                        style:
+                                            redTextStyle.copyWith(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  Divider(
+                                    color: primaryColor,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    currencyFormatter.format(snapshot.data[2]),
+                                    style: (snapshot.data[2].isNegative)
+                                        ? redTextStyle.copyWith(
+                                            fontWeight: semiBold,
+                                            fontSize: 16,
+                                          )
+                                        : greenTextStyle.copyWith(
+                                            fontWeight: semiBold,
+                                            fontSize: 16,
+                                          ),
+                                    // textAlign: TextAlign.right,
+                                  ),
+                                ],
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text(snapshot.error.toString());
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      primaryColor),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                         SizedBox(height: 42),
                         Column(
                           children: snapshot.data

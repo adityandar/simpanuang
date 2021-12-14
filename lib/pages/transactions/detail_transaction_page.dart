@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simpanuang/models/transaction_model.dart';
 import 'package:simpanuang/pages/transactions/edit_transaction_page.dart';
+import 'package:simpanuang/services/service.dart';
 import 'package:simpanuang/theme.dart';
 import 'package:simpanuang/widgets/custom_back_button.dart';
 
 class DetailTransactionPage extends StatelessWidget {
   final TransactionModel transaction;
+
+  final Service service = Service();
 
   final currencyFormatter = new NumberFormat.simpleCurrency(
     locale: 'id_ID',
@@ -72,7 +75,8 @@ class DetailTransactionPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditTransactionPage(),
+                          builder: (context) =>
+                              EditTransactionPage(transaction),
                         ),
                       );
                     },
@@ -93,12 +97,17 @@ class DetailTransactionPage extends StatelessWidget {
                     fontSize: 51,
                   ),
                 ),
+                SizedBox(height: 8),
                 Text(
                   transaction.catatan,
                   style: greyTextStyle.copyWith(
-                    fontSize: 26,
+                    fontSize: 20,
+                    height: 1,
                   ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                SizedBox(height: 8),
                 Text(
                   currencyFormatter.format(transaction.harga),
                   style: (transaction.jenis == 0)
@@ -111,8 +120,11 @@ class DetailTransactionPage extends StatelessWidget {
                           fontWeight: semiBold,
                         ),
                 ),
+                SizedBox(height: 8),
                 Text(
-                  '22 November 2021',
+                  DateFormat("dd MMMM yyyy", 'id_ID').format(
+                    DateTime.tryParse(transaction.tanggal),
+                  ),
                   style: blackTextStyle.copyWith(
                     fontSize: 22,
                   ),
@@ -120,7 +132,40 @@ class DetailTransactionPage extends StatelessWidget {
                 SizedBox(height: 86),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      //TODO: Buat confirmation dulu apakah mau delete/ga.
+                      try {
+                        int result =
+                            await service.deleteTransaction(transaction.id);
+                        if (result == 1) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Berhasil terhapus!'),
+                              backgroundColor: primaryColor,
+                              duration: Duration(milliseconds: 500),
+                            ),
+                          );
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/', (route) => false);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error, gagal terhapus!'),
+                              backgroundColor: alertColor,
+                              duration: Duration(milliseconds: 300),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: alertColor,
+                            duration: Duration(milliseconds: 300),
+                          ),
+                        );
+                      }
+                    },
                     child: Text(
                       'Hapus',
                       style: whiteTextStyle.copyWith(fontSize: 19),

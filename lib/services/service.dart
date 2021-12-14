@@ -56,6 +56,26 @@ class Service {
     });
   }
 
+  Future<int> getTotalHargaTransaksi() async {
+    final db = await init();
+    final resultDapat = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE jenis = 0",
+    );
+
+    final resultKeluar = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE jenis = 1",
+    );
+
+    int resultDapatFix = (resultDapat[0]["SUM(harga)"] == null)
+        ? 0
+        : resultDapat[0]["SUM(harga)"];
+    int resultKeluarFix = (resultKeluar[0]["SUM(harga)"] == null)
+        ? 0
+        : resultKeluar[0]["SUM(harga)"];
+    int resultTotal = resultDapatFix - resultKeluarFix;
+    return resultTotal;
+  }
+
   Future<List<int>> getSummaryHarga(int bulan) async {
     //returns the transactions as a list (array)
 
@@ -74,8 +94,6 @@ class Service {
       ],
     );
 
-    print(resultDapat);
-    print(resultKeluar);
     int resultDapatFix = (resultDapat[0]["SUM(harga)"] == null)
         ? 0
         : resultDapat[0]["SUM(harga)"];
@@ -106,8 +124,9 @@ class Service {
     // returns the number of rows updated
 
     final db = await init();
+    print(id);
 
-    int result = await db.update("Transaction", transaction.toJson(),
+    int result = await db.update("Transactions", transaction.toJson(),
         where: "id = ?", whereArgs: [id]);
     return result;
   }

@@ -28,7 +28,6 @@ class TransactionModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'jenis': jenis,
       'kategori': kategori,
       'tanggal': tanggal,
