@@ -83,19 +83,24 @@ class Service {
 
   Future<List<int>> getSummaryHarga(int bulan) async {
     //returns the transactions as a list (array)
-
+    String bln;
+    if (bulan.bitLength == 1) {
+      bln = "0" + bulan.toString();
+    } else {
+      bln = bulan.toString();
+    }
     final db = await init();
     final resultDapat = await db.rawQuery(
-      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = '?' AND jenis = 0",
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND jenis = 0",
       [
-        bulan,
+        bln,
       ],
     );
 
     final resultKeluar = await db.rawQuery(
-      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = '?' AND jenis = 1",
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND jenis = 1",
       [
-        bulan,
+        bln,
       ],
     );
 
