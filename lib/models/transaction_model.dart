@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class TransactionModel {
   int id;
   int jenis; //0: pemasukan, 1: pengeluaran

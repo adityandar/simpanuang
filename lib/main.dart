@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:simpanuang/pages/choose_category_page.dart';
 import 'package:simpanuang/pages/main_page.dart';
+import 'package:simpanuang/pages/splash_page.dart';
 import 'package:simpanuang/pages/transactions/add_transaction_page.dart';
 import 'package:simpanuang/services/service.dart';
 
@@ -24,8 +25,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      initialRoute: '/splash',
       routes: {
         '/': (context) => MainPage(),
+        '/splash': (context) => SplashPage(),
         '/add-transaction': (context) => AddTransactionPage(),
         '/choose-category': (context) => ChooseCategoryPage(),
       },

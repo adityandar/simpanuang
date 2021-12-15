@@ -1,3 +1,4 @@
+import 'package:simpanuang/models/laporan_model.dart';
 import 'package:sqflite/sqflite.dart'; //sqflite package
 import 'package:path_provider/path_provider.dart'; //path_provider package
 import 'package:path/path.dart'; //used to join paths
@@ -139,5 +140,117 @@ class Service {
     int result = await db.update("Transactions", transaction.toJson(),
         where: "id = ?", whereArgs: [id]);
     return result;
+  }
+
+  Future<LaporanModel> getLaporan(int bulan, int tahun) async {
+    //returns the transactions as a list (array)
+    final List kategoriMasuk = [
+      {'id': 0, 'title': 'Gaji'},
+      {'id': 1, 'title': 'Hadiah'},
+      {'id': 2, 'title': 'Bonus'},
+      {'id': 3, 'title': 'Award'},
+      {'id': 4, 'title': 'Penjualan'},
+      {'id': 5, 'title': 'Lainnya'}
+    ];
+    List<Map<String, dynamic>> resultKategoriMasuk = [];
+    final List kategoriKeluar = [
+      {'id': 0, 'title': 'Donasi & Amal'},
+      {'id': 1, 'title': 'Belanja'},
+      {'id': 2, 'title': 'Tagihan'},
+      {'id': 3, 'title': 'Cicilan'},
+      {'id': 4, 'title': 'Makanan'},
+      {'id': 5, 'title': 'Kesehatan'},
+      {'id': 6, 'title': 'Edukasi'},
+      {'id': 7, 'title': 'Buku'},
+      {'id': 8, 'title': 'Bisnis'},
+      {'id': 9, 'title': 'Transportasi'},
+      {'id': 10, 'title': 'Teman & Pasangan'},
+      {'id': 11, 'title': 'Hiburan'},
+      {'id': 12, 'title': 'Keluarga'},
+      {'id': 13, 'title': 'Investasi'},
+      {'id': 14, 'title': 'Asuransi'},
+      {'id': 15, 'title': 'Lainnya'},
+    ];
+    List<Map<String, dynamic>> resultKategoriKeluar = [];
+    String bln;
+    if (bulan.bitLength == 1) {
+      bln = "0" + bulan.toString();
+    } else {
+      bln = bulan.toString();
+    }
+    final db = await init();
+    final resultDapat = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND strftime('%Y', tanggal) = ?  AND jenis = 0",
+      [
+        bln,
+        tahun.toString(),
+      ],
+    );
+
+    kategoriMasuk.forEach(
+      (element) async {
+        var result = await db.rawQuery(
+          "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND strftime('%Y', tanggal) = ?  AND jenis = 0 AND kategori = ?",
+          [
+            bln,
+            tahun.toString(),
+            element["id"],
+          ],
+        );
+        resultKategoriMasuk.add(
+          {
+            'title': element["title"],
+            'total':
+                (result[0]["SUM(harga)"] == null) ? 0 : result[0]["SUM(harga)"]
+          },
+        );
+      },
+    );
+
+    kategoriKeluar.forEach(
+      (element) async {
+        var result = await db.rawQuery(
+          "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND strftime('%Y', tanggal) = ?  AND jenis = 1 AND kategori = ?",
+          [
+            bln,
+            tahun.toString(),
+            element["id"],
+          ],
+        );
+        resultKategoriKeluar.add(
+          {
+            'title': element["title"],
+            'total':
+                (result[0]["SUM(harga)"] == null) ? 0 : result[0]["SUM(harga)"]
+          },
+        );
+      },
+    );
+
+    final resultKeluar = await db.rawQuery(
+      "SELECT SUM(harga) FROM Transactions WHERE strftime('%m', tanggal) = ? AND strftime('%Y', tanggal) = ?  AND jenis = 1",
+      [
+        bln,
+        tahun.toString(),
+      ],
+    );
+
+    int resultDapatFix = (resultDapat[0]["SUM(harga)"] == null)
+        ? 0
+        : resultDapat[0]["SUM(harga)"];
+    int resultKeluarFix = (resultKeluar[0]["SUM(harga)"] == null)
+        ? 0
+        : resultKeluar[0]["SUM(harga)"];
+    int resultTotal = resultDapatFix - resultKeluarFix;
+
+    LaporanModel laporan = LaporanModel(
+      totalPemasukan: resultDapatFix,
+      totalPengeluaran: resultKeluarFix,
+      total: resultTotal,
+      resultKategoriPemasukan: resultKategoriMasuk,
+      resultKategoriPengeluaran: resultKategoriKeluar,
+    );
+
+    return laporan;
   }
 }

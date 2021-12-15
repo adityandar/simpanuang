@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:simpanuang/models/transaction_model.dart';
 import 'package:simpanuang/pages/transactions/detail_transaction_page.dart';
 import 'package:simpanuang/theme.dart';
@@ -7,7 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 class TransactionTile extends StatelessWidget {
   final TransactionModel transaction;
-  final currencyFormatter = new NumberFormat.simpleCurrency(
+  final currencyFormatter = new intl.NumberFormat.simpleCurrency(
     locale: 'id_ID',
     decimalDigits: 0,
   );
@@ -102,7 +102,7 @@ class TransactionTile extends StatelessWidget {
                         Text(
                           (date.day == DateTime.now().day)
                               ? 'Hari ini'
-                              : DateFormat('EEEE', 'id_ID').format(date),
+                              : intl.DateFormat('EEEE', 'id_ID').format(date),
                           style: blackTextStyle.copyWith(fontSize: 13),
                         ),
                         Text(
@@ -118,11 +118,13 @@ class TransactionTile extends StatelessWidget {
                         currencyFormatter.format(transaction.harga),
                         style: greenTextStyle,
                         maxFontSize: 16,
+                        textDirection: TextDirection.rtl,
                       )
                     : AutoSizeText(
                         '-${currencyFormatter.format(transaction.harga)}',
                         style: redTextStyle,
                         maxFontSize: 16,
+                        textDirection: TextDirection.rtl,
                       ),
               ],
             ),
@@ -155,11 +157,13 @@ class TransactionTile extends StatelessWidget {
                         currencyFormatter.format(transaction.harga),
                         style: greenTextStyle,
                         maxFontSize: 16,
+                        textDirection: TextDirection.rtl,
                       )
                     : AutoSizeText(
                         '-${currencyFormatter.format(transaction.harga)}',
                         style: redTextStyle,
                         maxFontSize: 16,
+                        textDirection: TextDirection.rtl,
                       ),
               ],
             ),
