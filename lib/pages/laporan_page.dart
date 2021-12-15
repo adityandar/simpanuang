@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:simpanuang/models/laporan_model.dart';
@@ -5,13 +6,25 @@ import 'package:simpanuang/services/service.dart';
 import 'package:simpanuang/theme.dart';
 import 'package:simpanuang/widgets/laporan_tile.dart';
 
-class LaporanPage extends StatelessWidget {
+class LaporanPage extends StatefulWidget {
+  @override
+  _LaporanPageState createState() => _LaporanPageState();
+}
+
+class _LaporanPageState extends State<LaporanPage> {
   final currencyFormatter = new intl.NumberFormat.simpleCurrency(
     locale: 'id_ID',
     decimalDigits: 0,
   );
+  final DateFormat dateFormat = intl.DateFormat('dd/MM/yyyy');
+
+  final TextEditingController _dateController = TextEditingController(
+    text: DateTime.now().toString(),
+  );
 
   final Service service = Service();
+
+  DateTime date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +43,31 @@ class LaporanPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Bulan Ini',
-                style: blackTextStyle.copyWith(fontSize: 25),
+              Container(
+                width: 150,
+                child: Center(
+                  child: DateTimePicker(
+                    controller: _dateController,
+                    dateMask: 'MMMM yyyy',
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    style: greenTextStyle.copyWith(
+                      fontSize: 19,
+                    ),
+                    onChanged: (val) => print(val),
+                    validator: (val) {
+                      return null;
+                    },
+                    onSaved: (val) {
+                      date = DateTime.tryParse(val);
+                      print(date.month);
+                    },
+                  ),
+                ),
               ),
               SizedBox(width: 16),
               Image.asset("assets/reversed_triangle.png", width: 16),
@@ -40,12 +75,6 @@ class LaporanPage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 4),
-        Center(
-          child: Text(
-            '01/11/2021 - 30/11/2021',
-            style: blackTextStyle.copyWith(fontSize: 13),
-          ),
-        ),
         SizedBox(height: 8),
         Divider(color: primaryColor),
         SizedBox(height: 8),
