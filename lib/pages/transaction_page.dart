@@ -89,13 +89,17 @@ class _TransactionPageState extends State<TransactionPage> {
                 onTap: () {
                   setState(() {
                     bulan = DateTime.now().month - 1;
+                    if (DateTime.now().month == 1) {
+                      bulan = 12;
+                    }
                   });
                 },
                 child: Container(
                   width: 128,
                   height: 26,
                   decoration: BoxDecoration(
-                    color: (bulan == DateTime.now().month - 1)
+                    color: (bulan == DateTime.now().month - 1 ||
+                            (bulan == 12 && DateTime.now().month == 1))
                         ? secondaryColor
                         : inactiveColor2,
                     borderRadius: BorderRadius.circular(20),
@@ -137,13 +141,17 @@ class _TransactionPageState extends State<TransactionPage> {
                 onTap: () {
                   setState(() {
                     bulan = DateTime.now().month + 1;
+                    if (DateTime.now().month == 12) {
+                      bulan = 1;
+                    }
                   });
                 },
                 child: Container(
                   width: 128,
                   height: 26,
                   decoration: BoxDecoration(
-                    color: (bulan == DateTime.now().month + 1)
+                    color: (bulan == DateTime.now().month + 1 ||
+                            (bulan == 1 && DateTime.now().month == 12))
                         ? secondaryColor
                         : inactiveColor2,
                     borderRadius: BorderRadius.circular(20),
@@ -166,6 +174,7 @@ class _TransactionPageState extends State<TransactionPage> {
           builder: (BuildContext context,
               AsyncSnapshot<List<TransactionModel>> snapshot) {
             if (snapshot.hasData) {
+              print(snapshot.data);
               if (snapshot.data.isEmpty) {
                 return Center(
                   child: Padding(

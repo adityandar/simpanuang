@@ -63,7 +63,7 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
                     });
                   },
                   child: Text(
-                    'Masuk',
+                    'Pemasukan',
                     style: whiteTextStyle.copyWith(
                       fontSize: 17,
                       color: (_currIdx == 0) ? whiteColor : primaryColor,
@@ -87,7 +87,7 @@ class _ChooseCategoryPageState extends State<ChooseCategoryPage> {
                     });
                   },
                   child: Text(
-                    'Keluar',
+                    'Pengeluaran',
                     style: greenTextStyle.copyWith(
                       fontSize: 17,
                       color: (_currIdx == 0) ? primaryColor : whiteColor,

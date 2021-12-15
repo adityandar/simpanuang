@@ -38,10 +38,15 @@ class Service {
 
   Future<List<TransactionModel>> getTransactions(int bulan) async {
     //returns the transactions as a list (array)
-
+    String bln;
+    if (bulan.bitLength == 1) {
+      bln = "0" + bulan.toString();
+    } else {
+      bln = bulan.toString();
+    }
     final db = await init();
     final maps = await db.query("Transactions",
-        where: "strftime('%m', tanggal) = '?'", whereArgs: [bulan]);
+        where: "strftime('%m', tanggal) = ?", whereArgs: [bln]);
 
     return List.generate(maps.length, (i) {
       //create a list of transactions

@@ -197,12 +197,13 @@ class _EditTransactionPageState extends State<EditTransactionPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         ChooseCategoryPage()));
-                            print(result);
-                            setState(() {
-                              currCategoryId = result[0]['id'];
-                              currCategoryTitle = result[0]['title'];
-                              currCategoryType = result[1];
-                            });
+                            if (result != null) {
+                              setState(() {
+                                currCategoryId = result[0]['id'];
+                                currCategoryTitle = result[0]['title'];
+                                currCategoryType = result[1];
+                              });
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(

@@ -86,29 +86,33 @@ class TransactionTile extends StatelessWidget {
         child: Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  date.day.toString(),
-                  style: blackTextStyle.copyWith(fontSize: 31),
-                ),
-                SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
                   children: [
                     Text(
-                      (date.day == DateTime.now().day)
-                          ? 'Hari ini'
-                          : DateFormat('EEEE', 'id_ID').format(date),
-                      style: blackTextStyle.copyWith(fontSize: 13),
+                      date.day.toString(),
+                      style: blackTextStyle.copyWith(fontSize: 31),
                     ),
-                    Text(
-                      '${months[date.month - 1]} ${date.year}',
-                      style: greyTextStyle.copyWith(fontSize: 12),
+                    SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          (date.day == DateTime.now().day)
+                              ? 'Hari ini'
+                              : DateFormat('EEEE', 'id_ID').format(date),
+                          style: blackTextStyle.copyWith(fontSize: 13),
+                        ),
+                        Text(
+                          '${months[date.month - 1]} ${date.year}',
+                          style: greyTextStyle.copyWith(fontSize: 12),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Spacer(),
                 (transaction.jenis == 0)
                     ? AutoSizeText(
                         currencyFormatter.format(transaction.harga),
@@ -126,6 +130,7 @@ class TransactionTile extends StatelessWidget {
               color: primaryColor,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +150,6 @@ class TransactionTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                Spacer(),
                 (transaction.jenis == 0)
                     ? AutoSizeText(
                         currencyFormatter.format(transaction.harga),

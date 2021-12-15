@@ -51,6 +51,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             catatan: _noteController.text,
             harga: int.tryParse(_priceController.text),
           );
+          print(transaksi.toJson());
           await widget.service.addTransaction(transaksi);
           Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
         }
@@ -152,11 +153,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     builder: (context) =>
                                         ChooseCategoryPage()));
                             print(result);
-                            setState(() {
-                              currCategoryId = result[0]['id'];
-                              currCategoryTitle = result[0]['title'];
-                              currCategoryType = result[1];
-                            });
+                            if (result != null) {
+                              setState(() {
+                                currCategoryId = result[0]['id'];
+                                currCategoryTitle = result[0]['title'];
+                                currCategoryType = result[1];
+                              });
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(
