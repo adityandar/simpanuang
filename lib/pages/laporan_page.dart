@@ -58,14 +58,15 @@ class _LaporanPageState extends State<LaporanPage> {
                     style: greenTextStyle.copyWith(
                       fontSize: 19,
                     ),
-                    onChanged: (val) => print(val),
+                    onChanged: (val) {
+                      setState(() {
+                        date = DateTime.tryParse(val);
+                      });
+                    },
                     validator: (val) {
                       return null;
                     },
-                    onSaved: (val) {
-                      date = DateTime.tryParse(val);
-                      print(date.month);
-                    },
+                    onSaved: (val) {},
                   ),
                 ),
               ),
@@ -79,7 +80,7 @@ class _LaporanPageState extends State<LaporanPage> {
         Divider(color: primaryColor),
         SizedBox(height: 8),
         FutureBuilder(
-            future: service.getLaporan(12, 2021),
+            future: service.getLaporan(date),
             builder:
                 (BuildContext context, AsyncSnapshot<LaporanModel> snapshot) {
               if (snapshot.hasData) {
@@ -116,7 +117,7 @@ class _LaporanPageState extends State<LaporanPage> {
                             Text(
                               currencyFormatter
                                   .format(snapshot.data.totalPengeluaran),
-                              style: greenTextStyle.copyWith(
+                              style: redTextStyle.copyWith(
                                 fontSize: 16,
                               ),
                             ),

@@ -118,13 +118,11 @@ class TransactionTile extends StatelessWidget {
                         currencyFormatter.format(transaction.harga),
                         style: greenTextStyle,
                         maxFontSize: 16,
-                        textDirection: TextDirection.rtl,
                       )
                     : AutoSizeText(
                         '-${currencyFormatter.format(transaction.harga)}',
                         style: redTextStyle,
                         maxFontSize: 16,
-                        textDirection: TextDirection.rtl,
                       ),
               ],
             ),
@@ -143,7 +141,7 @@ class TransactionTile extends StatelessWidget {
                       style: blackTextStyle.copyWith(fontSize: 16),
                     ),
                     Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       child: Text(
                         transaction.catatan,
                         style: greyTextStyle.copyWith(fontSize: 11),
@@ -157,13 +155,11 @@ class TransactionTile extends StatelessWidget {
                         currencyFormatter.format(transaction.harga),
                         style: greenTextStyle,
                         maxFontSize: 16,
-                        textDirection: TextDirection.rtl,
                       )
                     : AutoSizeText(
                         '-${currencyFormatter.format(transaction.harga)}',
                         style: redTextStyle,
                         maxFontSize: 16,
-                        textDirection: TextDirection.rtl,
                       ),
               ],
             ),

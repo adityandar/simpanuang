@@ -142,7 +142,9 @@ class Service {
     return result;
   }
 
-  Future<LaporanModel> getLaporan(int bulan, int tahun) async {
+  Future<LaporanModel> getLaporan(DateTime date) async {
+    int bulan = date.month;
+    int tahun = date.year;
     //returns the transactions as a list (array)
     final List kategoriMasuk = [
       {'id': 0, 'title': 'Gaji'},
